@@ -3,8 +3,8 @@ const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const cors = require('cors')
 const dotenv = require('dotenv')
-const routes = require('./routes.js')
-const negotiate = require('../customMiddlewares/negotiateResponse.js')
+const routes = require('./src/routes.js')
+const negotiate = require('./customMiddlewares/negotiateResponse.js')
 
 dotenv.config()
 
