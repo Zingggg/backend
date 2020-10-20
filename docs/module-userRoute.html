@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> userRoute</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-routes.html">routes</a></li><li><a href="module-userRoute.html">userRoute</a></li></ul><h3>Classes</h3><ul><li><a href="module-ZingggError-ZingggError.html">ZingggError</a></li></ul></div><div class="category"><h2>Middlewares</h2><h3>Modules</h3><ul><li><a href="module-negotiateResponse.html">negotiateResponse</a></li></ul></div><div class="category"><h2>controllers</h2><h3>Modules</h3><ul><li><a href="helper.module_loginController.html">loginController</a></li><li><a href="module-editUserController.html">editUserController</a></li><li><a href="module-loginAuthController.html">loginAuthController</a></li></ul></div><div class="category"><h2>helpers</h2><h3>Modules</h3><ul><li><a href="helper.module_editUserHelper.html">editUserHelper</a></li><li><a href="helper.module_loginHelper.html">loginHelper</a></li><li><a href="module-loginAuthHelper.html">loginAuthHelper</a></li></ul></div><div class="category"><h2>models</h2><h3>Modules</h3><ul><li><a href="module-userModel.html">userModel</a></li></ul></div><div class="category"><h2>utils</h2><h3>Modules</h3><ul><li><a href="module-otpGen.html">otpGen</a></li><li><a href="module-ZingggError.html">ZingggError</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Module</p>
+                    <h1>userRoute</h1>
+                </header>
+                
+
+
+
+
+<section>
+
+<header>
+    
+        
+            
+        
+            
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description"><h2>Module for user routes</h2>
+<h3>1. login route</h3>
+<p><strong>POST</strong><br>
+<strong>Path</strong> : /user/login<br>
+<strong>Content-Type</strong> : json<br>
+<strong>Body</strong>:</p>
+<pre class="prettyprint source"><code>{
+   mobile:&quot;+91xxxxxxxxxx&quot;
+}
+</code></pre>
+<p><strong>Response</strong>:<br>
+a. Success</p>
+<pre class="prettyprint source"><code>{
+   success: true,
+   message: &quot;otp generated successfully&quot;
+}
+</code></pre>
+<p>b. Failure</p>
+<pre class="prettyprint source"><code>{
+   success: false,
+   message: &quot;error message&quot;
+}
+</code></pre>
+<h3>2. login auth route</h3>
+<p><strong>POST</strong><br>
+<strong>Path</strong> : /user/auth<br>
+<strong>Content-Type</strong> : json<br>
+<strong>Body</strong>:</p>
+<pre class="prettyprint source"><code>{
+   mobile: &quot;+91xxxxxxxxxx&quot;,
+   otp: &quot;xxxxxx&quot;
+} 
+</code></pre>
+<p><strong>Response</strong>:<br>
+a. Success</p>
+<ul>
+<li>If already a Zinggg user</li>
+</ul>
+<pre class="prettyprint source"><code>{
+   success: true, 
+   isFirst: false,
+   name: &quot;user name&quot;,
+   mobile: &quot;mobile num&quot;
+   ...
+}
+</code></pre>
+<p><strong>See</strong> <a href="module-userModel.html"><code>module:userModel</code></a> for more user details</p>
+<ul>
+<li>If first time login</li>
+</ul>
+<pre class="prettyprint source"><code>{
+   success: true, 
+   isFirst: true
+}
+</code></pre>
+<p>b. Failure</p>
+<pre class="prettyprint source"><code>{
+   success: false,
+   message: &quot;error message&quot;
+}
+</code></pre>
+<h3>3. edit user route</h3>
+<p><strong>POST</strong><br>
+<strong>Path</strong> : /user/edit<br>
+<strong>Content-Type</strong> : json<br>
+<strong>Body</strong>:</p>
+<pre class="prettyprint source"><code>{
+   mobile: &quot;+91xxxxxxxxxx&quot;,
+   name: &quot;xxxx&quot;,
+   ...
+} 
+</code></pre>
+<p><strong>See</strong> <a href="module-userModel.html"><code>module:userModel</code></a> for more user details to edit<br>
+<strong>Response</strong>:<br>
+a. Success</p>
+<pre class="prettyprint source"><code>{
+   success: true,
+   message: &quot;user edited successfully&quot;
+   name: &quot;user name&quot;,
+   mobile: &quot;mobile number&quot;,
+   ...
+}
+</code></pre>
+<p>b. Failure</p>
+<pre class="prettyprint source"><code>{
+   success: false,
+   message: &quot;error message&quot;
+}
+</code></pre></div>
+        
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="routers_userRoute.js.html" class="button">View Source</a>
+            <span>
+                <a href="routers_userRoute.js.html">routers/userRoute.js</a>, <a href="routers_userRoute.js.html#line6">line 6</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+
+    
+    <h4 class="name" id="module:userRoute">
+        <a class="href-link" href="#module:userRoute">#</a>
+        
+        <span class="code-name">
+            
+                module:userRoute<span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        <p>exports userRouter</p>
+    </div>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="routers_userRoute.js.html" class="button">View Source</a>
+            <span>
+                <a href="routers_userRoute.js.html">routers/userRoute.js</a>, <a href="routers_userRoute.js.html#line130">line 130</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+    </div>
+    
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+            </div>
+            
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a></p>
+                    <p class="sidebar-created-by">
+                        <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by 
+                        <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+                    </p>
+                </div>
+            </footer>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+</body>
+</html>

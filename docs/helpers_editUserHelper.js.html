@@ -1,0 +1,224 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> helpers/editUserHelper.js</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-routes.html">routes</a></li><li><a href="module-userRoute.html">userRoute</a></li></ul><h3>Classes</h3><ul><li><a href="module-ZingggError-ZingggError.html">ZingggError</a></li></ul></div><div class="category"><h2>Middlewares</h2><h3>Modules</h3><ul><li><a href="module-negotiateResponse.html">negotiateResponse</a></li></ul></div><div class="category"><h2>controllers</h2><h3>Modules</h3><ul><li><a href="helper.module_loginController.html">loginController</a></li><li><a href="module-editUserController.html">editUserController</a></li><li><a href="module-loginAuthController.html">loginAuthController</a></li></ul></div><div class="category"><h2>helpers</h2><h3>Modules</h3><ul><li><a href="helper.module_editUserHelper.html">editUserHelper</a></li><li><a href="helper.module_loginHelper.html">loginHelper</a></li><li><a href="module-loginAuthHelper.html">loginAuthHelper</a></li></ul></div><div class="category"><h2>models</h2><h3>Modules</h3><ul><li><a href="module-userModel.html">userModel</a></li></ul></div><div class="category"><h2>utils</h2><h3>Modules</h3><ul><li><a href="module-otpGen.html">otpGen</a></li><li><a href="module-ZingggError.html">ZingggError</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>helpers/editUserHelper.js</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const ZingggError = require('../utils/zingggError.js')
+const { UserModel } = require('../models/userModel.js')
+const crypto = require('crypto')
+
+/**
+  * editUserHelper module
+  * @category helpers
+  * @module editUserHelper
+  * @memberof helper
+  */
+
+/**
+ * Checks if the request has required input fields in its body
+ * module:editUserHelper.checkEditRequest
+ * @function checkEditRequest
+ * @param {Object} req - Http Request Object
+ * @returns {void}
+ * @throws {ZingggError} missing request with error code 400 if request body is missing
+ * @static
+ */
+function checkEditRequest (req) {
+  const reqBody = req.body
+  if (!(reqBody &amp;&amp;
+    reqBody.mobile &amp;&amp;
+    reqBody.name &amp;&amp;
+    reqBody.gender)) {
+    throw new ZingggError('Missing Request', 400)
+  }
+}
+
+/**
+ * Checks if the user already exists in the database
+ * @param {Object} req - Http Request Object
+ * @returns {boolean} - true if user already exists else false
+ * @static
+ */
+async function checkIfUserExist (req) {
+  try {
+    const reqBody = req.body
+    const user = await UserModel.findOne({ mobile: reqBody.mobile }).exec()
+    if (!user) {
+      return false
+    }
+    return true
+  } catch (err) {
+    if (err instanceof ZingggError) {
+      throw err
+    }
+    throw new ZingggError(err.message, 500)
+  }
+}
+
+/**
+ * Creates a new user in the database using request body
+ * @param {*} req - Http Request Object
+ * @returns {User} newUser._doc - The user object that was created in database
+ * @static
+ */
+async function createUser (req) {
+  try {
+    const reqBody = req.body
+    const sessionId = crypto.randomBytes(16).toString('hex')
+    reqBody.sessionId = sessionId
+    const newUser = await UserModel.create({ reqBody })
+    if (!newUser) {
+      throw new ZingggError('error creating user', 500)
+    }
+    return newUser._doc
+  } catch (err) {
+    if (err instanceof ZingggError) {
+      throw err
+    }
+    throw new ZingggError(err.message, 500)
+  }
+}
+
+/**
+ * Updates the data of the user in database
+ * @param {*} req - Http Request Object
+ * @return {User} res._doc - The object of the updated user
+ * @static
+ */
+async function doDbUpdate (req) {
+  try {
+    const reqBody = req.body
+    const { mobile, ...updateBody } = reqBody
+    if (!updateBody) {
+      throw new ZingggError('missing update body', 400)
+    }
+    const res = await UserModel.findOneAndUpdate({ mobile: req.body.mobile }, updateBody, { new: true })
+    if (!res) {
+      throw new ZingggError('unable to update user', 500)
+    }
+    return res._doc
+  } catch (err) {
+    if (err instanceof ZingggError) {
+      throw err
+    }
+    throw new ZingggError(err.message, 500)
+  }
+}
+
+module.exports = {
+  checkEditRequest,
+  checkIfUserExist,
+  createUser,
+  doDbUpdate
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a></p>
+                    <p class="sidebar-created-by">
+                        <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by 
+                        <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+                    </p>
+                </div>
+            </footer>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+</body>
+</html>
